@@ -2,11 +2,15 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
+	"io"
 	"os"
 
 	"github.com/gocarina/gocsv"
 )
+
+type fileType interface {
+	parse(filePath string) error
+}
 
 type template struct {
 	From     string `json:"from"`
@@ -30,25 +34,56 @@ type customer struct {
 	Email     string `csv:"EMAIL"`
 }
 
-type parser interface {
-	parse()
-}
+// func (t *template) parse(file []byte) {
+// 	if err := json.Unmarshal([]byte(file), &t); err != nil {
+// 		fmt.Println(err)
+// 	}
+// }
 
-type sender interface {
-	sendViaREST()
-	sendViaSMTP()
-}
+func (t *template) parse(filePath string) error {
+	jsonFile, err := os.Open(filePath)
+	if err != nil {
+		return err
+	}
+	defer jsonFile.Close()
 
-func (t *template) parse(file []byte) {
-	if err := json.Unmarshal([]byte(file), &t); err != nil {
-		fmt.Println(err)
+	byteValue, err := io.ReadAll(jsonFile)
+
+	if err := json.Unmarshal(byteValue, &t); err != nil {
+		return err
 	}
 
-	// fmt.Print(t.From)
+	// if err != nil {
+	// 	log.Fatal(err.Error())
+	// }
+
+	// if byteData, ok := d.([]byte); ok {
+	// 	if err := json.Unmarshal(byteData, &t); err != nil {
+	// 		return err
+	// 	}
+	// } else {
+	// 	return errors.New("Invalid type")
+	// }
+
+	return nil
 }
 
-func (c customer) parse(file *os.File, customers []*customer) {
-	if err := gocsv.UnmarshalFile(file, &customers); err != nil {
-		fmt.Println(err)
+// func (c customer) parse(file *os.File, customers []*customer) {
+// 	if err := gocsv.UnmarshalFile(file, &customers); err != nil {
+// 		fmt.Println(err)
+// 	}
+// }
+
+func (c *customer) parse(filePath string) error {
+	csvCustomerFile, err := os.OpenFile(filePath, os.O_RDWR|os.O_CREATE, os.ModePerm)
+	if err != nil {
+		return err
 	}
+	defer csvCustomerFile.Close()
+
+	if err := gocsv.UnmarshalFile(csvCustomerFile, &customers); err != nil {
+		return err
+	}
+
+	return nil
 }

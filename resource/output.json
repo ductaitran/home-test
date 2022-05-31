@@ -1,7 +1,31 @@
-{
- "from": "The Marketing Team\u003cmarketing@example.com\u003e",
- "to": "",
- "subject": "A new product is being launched soon...",
- "mimeType": "text/plain",
- "body": "Hi Mr Tai Smith, \nToday, 31 May 2022, we would like to tell you that... Sincerely, \nThe Marketing Team"
-}
+[
+ {
+  "from": "The Marketing Team\u003cmarketing@example.com\u003e",
+  "to": "john.smith@example.com",
+  "subject": "A new product is being launched soon...",
+  "mimeType": "text/plain",
+  "body": "Hi Mr John Smith, \nToday, 31 May 2022, we would like to tell you that... Sincerely, \nThe Marketing Team"
+ },
+ {
+  "from": "The Marketing Team\u003cmarketing@example.com\u003e",
+  "to": "michelle.smith@example.com",
+  "subject": "A new product is being launched soon...",
+  "mimeType": "text/plain",
+  "body": "Hi Mrs Michelle Smith, \nToday, 31 May 2022, we would like to tell you that... Sincerely, \nThe Marketing Team"
+ }
+][
+ {
+  "from": "The Marketing Team\u003cmarketing@example.com\u003e",
+  "to": "john.smith@example.com",
+  "subject": "A new product is being launched soon...",
+  "mimeType": "text/plain",
+  "body": "Hi Mr John Smith, \nToday, 31 May 2022, we would like to tell you that... Sincerely, \nThe Marketing Team"
+ },
+ {
+  "from": "The Marketing Team\u003cmarketing@example.com\u003e",
+  "to": "michelle.smith@example.com",
+  "subject": "A new product is being launched soon...",
+  "mimeType": "text/plain",
+  "body": "Hi Mrs Michelle Smith, \nToday, 31 May 2022, we would like to tell you that... Sincerely, \nThe Marketing Team"
+ }
+]
