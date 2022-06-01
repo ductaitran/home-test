@@ -2,15 +2,10 @@ package main
 
 import (
 	"encoding/json"
-	"io"
-	"os"
-
-	"github.com/gocarina/gocsv"
+	"fmt"
+	"strings"
+	"time"
 )
-
-type fileType interface {
-	parse(filePath string) error
-}
 
 type template struct {
 	From     string `json:"from"`
@@ -34,56 +29,52 @@ type customer struct {
 	Email     string `csv:"EMAIL"`
 }
 
-// func (t *template) parse(file []byte) {
-// 	if err := json.Unmarshal([]byte(file), &t); err != nil {
-// 		fmt.Println(err)
-// 	}
-// }
-
-func (t *template) parse(filePath string) error {
-	jsonFile, err := os.Open(filePath)
-	if err != nil {
-		return err
+func (t *template) parse(file []byte) {
+	if err := json.Unmarshal([]byte(file), &t); err != nil {
+		fmt.Println(err)
 	}
-	defer jsonFile.Close()
-
-	byteValue, err := io.ReadAll(jsonFile)
-
-	if err := json.Unmarshal(byteValue, &t); err != nil {
-		return err
-	}
-
-	// if err != nil {
-	// 	log.Fatal(err.Error())
-	// }
-
-	// if byteData, ok := d.([]byte); ok {
-	// 	if err := json.Unmarshal(byteData, &t); err != nil {
-	// 		return err
-	// 	}
-	// } else {
-	// 	return errors.New("Invalid type")
-	// }
-
-	return nil
 }
 
-// func (c customer) parse(file *os.File, customers []*customer) {
-// 	if err := gocsv.UnmarshalFile(file, &customers); err != nil {
-// 		fmt.Println(err)
+// func (t *template) parse(filePath string) error {
+// 	jsonFile, err := os.Open(filePath)
+// 	if err != nil {
+// 		return err
 // 	}
+// 	defer jsonFile.Close()
+
+// 	byteValue, err := io.ReadAll(jsonFile)
+
+// 	if err := json.Unmarshal(byteValue, &t); err != nil {
+// 		return err
+// 	}
+
+// 	return nil
 // }
 
-func (c *customer) parse(filePath string) error {
-	csvCustomerFile, err := os.OpenFile(filePath, os.O_RDWR|os.O_CREATE, os.ModePerm)
-	if err != nil {
-		return err
+// merge customer data into template
+// valid customers are added to a mail list,
+// customers without email are filtered
+func merge(tpl template, customers []*customer) ([]email, []customer) {
+	currentTime := time.Now()
+	var mailList []email
+	var errorCustomers = []customer{}
+	for _, customer := range customers {
+		body := strings.ReplaceAll(tpl.Body, "{{TODAY}}", currentTime.Format("02 Jan 2006"))
+		body = strings.ReplaceAll(body, "{{TITLE}}", customer.Title)
+		body = strings.ReplaceAll(body, "{{FIRST_NAME}}", customer.FirstName)
+		body = strings.ReplaceAll(body, "{{LAST_NAME}}", customer.LastName)
+		if customer.Email != "" {
+			mailList = append(mailList, email{
+				From:     tpl.From,
+				To:       customer.Email,
+				Subject:  tpl.Subject,
+				MimeType: tpl.MimeType,
+				Body:     body,
+			})
+		} else {
+			errorCustomers = append(errorCustomers, *customer)
+		}
 	}
-	defer csvCustomerFile.Close()
 
-	if err := gocsv.UnmarshalFile(csvCustomerFile, &customers); err != nil {
-		return err
-	}
-
-	return nil
+	return mailList, errorCustomers
 }
