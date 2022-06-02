@@ -16,7 +16,7 @@ func getConfig() *Config {
 		instance = &Config{
 			templatePath:  getOsArg(1, "resource/email_template.json"),
 			customersPath: getOsArg(2, "resource/customers.csv"),
-			outputPath:    getOsArg(3, "resource/output.json"),
+			outputPath:    getOsArg(3, "resource/output_emails.json"),
 			errorsPath:    getOsArg(4, "resource/errors.csv"),
 		}
 	}

@@ -1,4 +1,4 @@
-module home_test
+module email-sender
 
 go 1.18
 

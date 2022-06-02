@@ -35,22 +35,6 @@ func (t *template) parse(file []byte) {
 	}
 }
 
-// func (t *template) parse(filePath string) error {
-// 	jsonFile, err := os.Open(filePath)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	defer jsonFile.Close()
-
-// 	byteValue, err := io.ReadAll(jsonFile)
-
-// 	if err := json.Unmarshal(byteValue, &t); err != nil {
-// 		return err
-// 	}
-
-// 	return nil
-// }
-
 // merge customer data into template
 // valid customers are added to a mail list,
 // customers without email are filtered
